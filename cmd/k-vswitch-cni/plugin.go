@@ -40,6 +40,7 @@ import (
 	"github.com/containernetworking/plugins/pkg/utils"
 	"github.com/j-keck/arping"
 	"github.com/vishvananda/netlink"
+	"k8s.io/klog"
 )
 
 // NOTE: portions of the code in this file are copied from
@@ -352,9 +353,13 @@ func cmdAdd(args *skel.CmdArgs) error {
 		args.StdinData
 		args.ContainerID
 	*/
-	fmt.Errorf("IfName %s \n", args.IfName)
-	fmt.Errorf("Netns %s \n", args.Netns)
-	fmt.Errorf("ContainerID %d \n", args.ContainerID)
+	//fmt.Errorf("IfName %s \n", args.IfName)
+	//fmt.Errorf("Netns %s \n", args.Netns)
+	//fmt.Errorf("ContainerID %d \n", args.ContainerID)
+
+	klog.Info("Amir IfName %q", args.IfName)
+	klog.Info("Amir Netns %q", args.Netns)
+	klog.Info("Amir ContainerID %q", args.ContainerID)
 
 	success := false
 
