@@ -118,7 +118,7 @@ spec:
       serviceAccountName: k-vswitch
       containers:
       - name: k-vswitch-controller
-        image: nephilimboy/k-vswitch:v1
+        image: nephilimboy/k-vswitch:v2
         imagePullPolicy: Always
         command:
          - "/bin/k-vswitch-controller"
@@ -164,7 +164,7 @@ spec:
       serviceAccountName: k-vswitch
       containers:
       - name: k-vswitchd
-        image: nephilimboy/k-vswitch:v1
+        image: nephilimboy/k-vswitch:v2
         imagePullPolicy: Always
         env:
         - name: NODE_NAME
@@ -186,7 +186,7 @@ spec:
             name: lib-modules
       initContainers:
       - name: install-cni
-        image: nephilimboy/k-vswitch:v1
+        image: nephilimboy/k-vswitch:v2
         command:
         - /bin/sh
         - -c
