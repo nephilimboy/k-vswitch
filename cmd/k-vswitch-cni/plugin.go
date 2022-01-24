@@ -345,6 +345,17 @@ func enableIPForward(family int) error {
 }
 
 func cmdAdd(args *skel.CmdArgs) error {
+
+	/*
+		args.IfName
+		args.Netns
+		args.StdinData
+		args.ContainerID
+	*/
+	fmt.Errorf("IfName %s \n", args.IfName)
+	fmt.Errorf("Netns %s \n", args.Netns)
+	fmt.Errorf("ContainerID %d \n", args.ContainerID)
+
 	success := false
 
 	netConf, cniVersion, err := loadNetConf(args.StdinData)
