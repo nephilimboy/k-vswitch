@@ -15,7 +15,8 @@ metadata:
   name: k-vswitch
   namespace: kube-system
 data:
-  clusterCIDR: "<UPDATE ME>"   # change this depending on your cluster, e.g. "100.96.0.0/11"
+  #clusterCIDR: "<UPDATE ME>"   # change this depending on your cluster, e.g. "100.96.0.0/11"
+  clusterCIDR: "192.168.0.0/16"   # change this depending on your cluster, e.g. "100.96.0.0/11"
   serviceCIDR: "<UPDATE ME>"   # change this depending on your cluster, e.g. "100.64.0.0/13"
   overlayType: "vxlan"         # change this depending on your cluster, can be "vxlan" or "gre"
 
