@@ -1,5 +1,5 @@
 # Kubernetes SDN-based CNI (KSC)
-Customized CNI based on the [K-vswitch](https://github.com/user/repo/blob/branch/other_file.md)
+Customized CNI based on the [K-vswitch](https://github.com/k-vswitch/k-vswitch)
 
 ## Features
 
