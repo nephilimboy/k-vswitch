@@ -550,7 +550,7 @@ func cmdAdd(args *skel.CmdArgs) error {
 				link, err := netlink.LinkByName("eth1")
 				if err != nil {
 				}
-				hwAddr, err := net.ParseMAC(podMacAddr)
+				hwAddr, err := net.ParseMAC(podSecondMacAddr)
 				if err != nil {
 				}
 				return netlink.LinkSetHardwareAddr(link, hwAddr)
