@@ -40,7 +40,6 @@ import (
 	"github.com/containernetworking/plugins/pkg/utils"
 	"github.com/j-keck/arping"
 	"github.com/vishvananda/netlink"
-	"k8s.io/klog"
 )
 
 // NOTE: portions of the code in this file are copied from
@@ -49,6 +48,7 @@ import (
 const (
 	defaultBridgeName = "k-vswitch0"
 	podMacAddr        = "aa:bb:cc:dd:ee:ff"
+	podSecondMacAddr  = "aa:bb:cc:dd:ee:f0"
 )
 
 type NetConf struct {
@@ -346,21 +346,6 @@ func enableIPForward(family int) error {
 }
 
 func cmdAdd(args *skel.CmdArgs) error {
-
-	/*
-		args.IfName
-		args.Netns
-		args.StdinData
-		args.ContainerID
-	*/
-	//fmt.Errorf("IfName %s \n", args.IfName)
-	//fmt.Errorf("Netns %s \n", args.Netns)
-	//fmt.Errorf("ContainerID %d \n", args.ContainerID)
-
-	klog.Info("Amir IfName %q", args.IfName)
-	klog.Info("Amir Netns %q", args.Netns)
-	klog.Info("Amir ContainerID %q", args.ContainerID)
-
 	success := false
 
 	netConf, cniVersion, err := loadNetConf(args.StdinData)
@@ -545,6 +530,45 @@ func cmdAdd(args *skel.CmdArgs) error {
 
 	// re: defer statement above for cleaning up IPAM
 	success = true
+
+	///////////////////////////////////////////////////////////////////////////
+	// Create the second NIC for FRER pod
+
+	// extract the process ID from netns -> simple netns /proc/9731/ns/net
+	str := "/proc/" + strings.Split(args.Netns, "/")[2] + "/cgroup"
+	cmd := "docker ps --no-trunc | grep $(cat " + str + " | grep -oE '[0-9a-f]{64}' | head -1) | sed 's/^.* //'"
+	out, err := exec.Command("bash", "-c", cmd).Output()
+	// The out output is like k8s_POD_pod-httpd_default_518b6f2c-fac2-412d-b0d7-8de5ae970d03_0
+	if err != nil {
+		fmt.Println("error")
+	} else {
+		if strings.Contains(string(out), "frer") {
+			hostSecondInterface, containerSecondInterface, err := setupVeth(netns, "eth1")
+			if err != nil {
+			}
+			err = netns.Do(func(hostNS ns.NetNS) error {
+				link, err := netlink.LinkByName("eth1")
+				if err != nil {
+				}
+				hwAddr, err := net.ParseMAC(podMacAddr)
+				if err != nil {
+				}
+				return netlink.LinkSetHardwareAddr(link, hwAddr)
+			})
+			err = addPort(netConf.BridgeName, hostSecondInterface.Name, containerSecondInterface.Mac, args.Netns, podNamespace, podName)
+			if err != nil {
+			}
+			hostSecondLink, err := netlink.LinkByName(hostSecondInterface.Name)
+
+			if err := netlink.LinkSetUp(hostSecondLink); err != nil {
+				return err
+			}
+			//resultSecond := &current.Result{CNIVersion: cniVersion, Interfaces: []*current.Interface{bridge, hostSecondInterface, containerSecondInterface}}
+
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////
 
 	return types.PrintResult(result, cniVersion)
 }
